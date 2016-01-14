@@ -65,7 +65,7 @@ add_darling_executable(touch touch/touch.c)
 
 install(TARGETS chflags chmod chown cksum compress cp dd du
 	install-bin ipcrm ln ls mkdir mkfifo mknod mv pathchk
-	pax rm rmdir touch
+	pax rm rmdir stat touch
 	DESTINATION libexec/darling/bin)
 install(FILES compress/zcat.sh RENAME zcat
 	PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
