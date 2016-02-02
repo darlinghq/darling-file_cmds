@@ -40,6 +40,7 @@ add_darling_executable(cksum cksum/cksum.c  cksum/crc32.c  cksum/crc.c  cksum/pr
 add_darling_executable(compress compress/compress.c  compress/zopen.c)
 add_darling_executable(cp cp/cp.c cp/utils.c)
 add_darling_executable(dd dd/args.c  dd/conv.c  dd/conv_tab.c  dd/dd.c  dd/misc.c  dd/position.c)
+add_darling_executable(df df/df.c df/vfslist.c)
 add_darling_executable(du du/du.c)
 # add_darling_executable(gzip gzip/gzip.c) # TODO: missing liblzma
 add_darling_executable(install-bin install/xinstall.c)
@@ -63,7 +64,9 @@ add_darling_executable(rmdir rmdir/rmdir.c)
 add_darling_executable(stat stat/stat.c)
 add_darling_executable(touch touch/touch.c)
 
-install(TARGETS chflags chmod chown cksum compress cp dd du
+target_link_libraries(df util)
+
+install(TARGETS chflags chmod chown cksum compress cp dd df du
 	install-bin ipcrm ln ls mkdir mkfifo mknod mv pathchk
 	pax rm rmdir stat touch
 	DESTINATION libexec/darling/bin)
