@@ -11,6 +11,10 @@ add_definitions(-DTARGET_OS_MAC=1)
 add_definitions(-D__APPLE__ -D__DYNAMIC__)
 # add_definitions(-DSUPPORT_UTMPX)
 
+add_definitions(
+	-DCOLORLS=1
+)
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -U_POSIX_C_SOURCE -D__DARWIN_UNIX03 -nostdinc -fblocks -fPIC -ggdb -O0")
 set(CMAKE_EXE_LINKER_FLAGS "-nodefaultlibs -nostdlib -Wl,--version-script=${DARLING_TOP_DIRECTORY}/darwin.map")
 #set(CMAKE_SHARED_LINKER_FLAGS "-nodefaultlibs -Wl,--version-script=${DARLING_TOP_DIRECTORY}/darwin.map")
@@ -29,6 +33,7 @@ include_directories(${DARLING_TOP_DIRECTORY}/src/external/zlib)
 include_directories(${DARLING_TOP_DIRECTORY}/src/external/bzip2)
 include_directories(${DARLING_TOP_DIRECTORY}/src/CommonCrypto)
 include_directories(${DARLING_TOP_DIRECTORY}/src/libremovefile)
+include_directories(${DARLING_TOP_DIRECTORY}/src/ncurses/include)
 
 include(InstallSymlink)
 set(BINARY_PACKAGING_MODE ON)
@@ -49,7 +54,7 @@ add_darling_executable(ipcrm ipcrm/ipcrm.c)
 #add_darling_executable(ipcs ipcs/ipcs.c) # TODO: Doesn't build
 add_darling_executable(ln ln/ln.c)
 add_darling_executable(ls ls/cmp.c  ls/ls.c  ls/print.c  ls/util.c)
-target_link_libraries(ls util)
+target_link_libraries(ls util ncurses)
 add_darling_executable(mkdir mkdir/mkdir.c)
 add_darling_executable(mkfifo mkfifo/mkfifo.c)
 add_darling_executable(mknod mknod/mknod.c)
