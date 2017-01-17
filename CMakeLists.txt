@@ -16,8 +16,6 @@ add_definitions(
 )
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -U_POSIX_C_SOURCE -D__DARWIN_UNIX03 -nostdinc -fblocks -fPIC -ggdb -O0")
-set(CMAKE_EXE_LINKER_FLAGS "-nodefaultlibs -nostdlib -Wl,--version-script=${DARLING_TOP_DIRECTORY}/darwin.map")
-#set(CMAKE_SHARED_LINKER_FLAGS "-nodefaultlibs -Wl,--version-script=${DARLING_TOP_DIRECTORY}/darwin.map")
 
 include_directories(${DARLING_TOP_DIRECTORY}/src/libc/include/FreeBSD)
 include_directories(${DARLING_TOP_DIRECTORY}/src/libc/include/NetBSD)
@@ -34,6 +32,7 @@ include_directories(${DARLING_TOP_DIRECTORY}/src/external/bzip2)
 include_directories(${DARLING_TOP_DIRECTORY}/src/CommonCrypto)
 include_directories(${DARLING_TOP_DIRECTORY}/src/libremovefile)
 include_directories(${DARLING_TOP_DIRECTORY}/src/ncurses/include)
+include_directories(${DARLING_TOP_DIRECTORY}/src/external/liblzma/src/liblzma/api/)
 
 include(InstallSymlink)
 set(BINARY_PACKAGING_MODE ON)
@@ -47,7 +46,12 @@ add_darling_executable(cp cp/cp.c cp/utils.c)
 add_darling_executable(dd dd/args.c  dd/conv.c  dd/conv_tab.c  dd/dd.c  dd/misc.c  dd/position.c)
 add_darling_executable(df df/df.c df/vfslist.c)
 add_darling_executable(du du/du.c)
-# add_darling_executable(gzip gzip/gzip.c) # TODO: missing liblzma
+add_darling_executable(gzip gzip/gzip.c) # TODO: missing liblzma
+target_link_libraries(gzip lzma z bz2)
+set_target_properties(gzip PROPERTIES COMPILE_FLAGS "-DGZIP_APPLE_VERSION=\\\"242\\\"")
+InstallSymlink("gzip" "${CMAKE_INSTALL_PREFIX}/libexec/darling/usr/bin/gunzip")
+InstallSymlink("gzip" "${CMAKE_INSTALL_PREFIX}/libexec/darling/usr/bin/gzcat")
+
 add_darling_executable(install-bin install/xinstall.c)
 set_target_properties(install-bin PROPERTIES OUTPUT_NAME install)
 add_darling_executable(ipcrm ipcrm/ipcrm.c)
@@ -71,10 +75,13 @@ add_darling_executable(touch touch/touch.c)
 
 target_link_libraries(df util)
 
-install(TARGETS chflags chmod chown cksum compress cp dd df du
-	install-bin ipcrm ln ls mkdir mkfifo mknod mv pathchk
+install(TARGETS chmod chown cksum cp dd df du
+	ln ls mkdir mknod mv
 	pax rm rmdir stat touch
 	DESTINATION libexec/darling/bin)
+install(TARGETS gzip pathchk compress chflags ipcrm install-bin
+	mkfifo
+	DESTINATION libexec/darling/usr/bin)
 install(FILES compress/zcat.sh RENAME zcat
 	PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
 	                GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
