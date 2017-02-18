@@ -112,3 +112,55 @@ InstallSymlink(zcat libexec/darling/usr/bin/gzip)
 InstallSymlink(gunzip libexec/darling/usr/bin/gzip)
 InstallSymlink(zcmp libexec/darling/usr/bin/zdiff)
 InstallSymlink(zless libexec/darling/usr/bin/zmore)
+
+# Manpages
+install(FILES
+	mkdir/mkdir.1
+	mv/mv.1
+	dd/dd.1
+	touch/touch.1
+	chmod/chmod.1
+	df/df.1
+	ln/link.1
+	ln/ln.1
+	compress/uncompress.1
+	compress/compress.1
+	gzip/zforce.1
+	gzip/zdiff.1
+	gzip/zmore.1
+	gzip/gzexe.1
+	gzip/znew.1
+	gzip/gzip.1
+	cp/cp.1
+	ls/ls.1
+	rm/unlink.1
+	rm/rm.1
+	stat/stat.1
+	stat/readlink.1
+	chflags/chflags.1
+	chown/chgrp.1
+	rmdir/rmdir.1
+	shar/shar.1
+	pathchk/pathchk.1
+	pax/cpio.1
+	pax/pax.1
+	ipcs/ipcs.1
+	mkfifo/mkfifo.1
+	du/du.1
+	ipcrm/ipcrm.1
+	install/install.1
+	cksum/cksum.1
+	cksum/sum.1
+
+	DESTINATION libexec/darling/usr/share/man1
+)
+
+install(FILES ln/symlink.7 DESTINATION libexec/darling/usr/share/man7)
+
+install(FILES
+	mtree/mtree.8
+	mknod/mknod.8
+	chown/chown.8
+
+	DESTINATION libexec/darling/usr/share/man/man8
+)
