@@ -106,11 +106,11 @@ InstallSymlink(chown libexec/darling/bin/chgrp)
 InstallSymlink(rm libexec/darling/bin/unlink)
 InstallSymlink(stat libexec/darling/bin/readlink)
 
-InstallSymlink(gunzip libexec/darling/usr/bin/gzip)
-InstallSymlink(gzcat libexec/darling/usr/bin/gzip)
-InstallSymlink(zcat libexec/darling/usr/bin/gzip)
-InstallSymlink(gunzip libexec/darling/usr/bin/gzip)
-InstallSymlink(zcmp libexec/darling/usr/bin/zdiff)
+InstallSymlink(gzip libexec/darling/usr/bin/gunzip)
+InstallSymlink(gzip libexec/darling/usr/bin/gzcat)
+InstallSymlink(gzip libexec/darling/usr/bin/zcat)
+InstallSymlink(gzip libexec/darling/usr/bin/gunzip)
+InstallSymlink(zdiff libexec/darling/usr/bin/zcmp)
 InstallSymlink(zless libexec/darling/usr/bin/zmore)
 
 # Manpages
