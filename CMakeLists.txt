@@ -6,36 +6,45 @@ if(COMMAND cmake_policy)
 	cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
-include(darling_exe)
-add_definitions(-DTARGET_OS_MAC=1)
-add_definitions(-D__APPLE__ -D__DYNAMIC__)
 # add_definitions(-DSUPPORT_UTMPX)
 
-add_definitions(
-	-DCOLORLS=1
+add_compile_options(
+	-nostdinc
+	-fblocks
+	-fPIC
+	-ggdb
+	-O0
 )
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -U_POSIX_C_SOURCE -D__DARWIN_UNIX03 -nostdinc -fblocks -fPIC -ggdb -O0")
+add_definitions(
+	-DTARGET_OS_MAC=1
+	-DCOLORLS=1
+	-D__APPLE__
+	-D__DYNAMIC__
+	-D__DARWIN_UNIX03
+	-U_POSIX_C_SOURCE
+)
+
 set(CMAKE_EXE_LINKER_FLAGS "-nodefaultlibs -nostdlib -Wl,--version-script=${DARLING_TOP_DIRECTORY}/darwin.map")
-#set(CMAKE_SHARED_LINKER_FLAGS "-nodefaultlibs -Wl,--version-script=${DARLING_TOP_DIRECTORY}/darwin.map")
 
-include_directories(${DARLING_TOP_DIRECTORY}/src/libc/include/FreeBSD)
-include_directories(${DARLING_TOP_DIRECTORY}/src/libc/include/NetBSD)
-include_directories(${DARLING_TOP_DIRECTORY}/src/libc/gen)
-include_directories(${DARLING_TOP_DIRECTORY}/src/libc/darwin)
-include_directories(${DARLING_TOP_DIRECTORY}/src/libc/stdtime/FreeBSD)
-include_directories(${DARLING_TOP_DIRECTORY}/src/launchd/liblaunch)
-include_directories(${DARLING_TOP_DIRECTORY}/src/external/libdispatch)
-include_directories(${DARLING_TOP_DIRECTORY}/src/libinfo/membership.subproj)
-include_directories(${DARLING_TOP_DIRECTORY}/src/copyfile)
-include_directories(${DARLING_TOP_DIRECTORY}/src/libutil)
-include_directories(${DARLING_TOP_DIRECTORY}/src/external/zlib)
-include_directories(${DARLING_TOP_DIRECTORY}/src/external/bzip2)
-include_directories(${DARLING_TOP_DIRECTORY}/src/CommonCrypto)
-include_directories(${DARLING_TOP_DIRECTORY}/src/libremovefile)
-include_directories(${DARLING_TOP_DIRECTORY}/src/ncurses/include)
+include_directories(
+	${DARLING_TOP_DIRECTORY}/src/libc/include/FreeBSD
+	${DARLING_TOP_DIRECTORY}/src/libc/include/NetBSD
+	${DARLING_TOP_DIRECTORY}/src/libc/gen
+	${DARLING_TOP_DIRECTORY}/src/libc/darwin
+	${DARLING_TOP_DIRECTORY}/src/libc/stdtime/FreeBSD
+	${DARLING_TOP_DIRECTORY}/src/launchd/liblaunch
+	${DARLING_TOP_DIRECTORY}/src/external/libdispatch
+	${DARLING_TOP_DIRECTORY}/src/libinfo/membership.subproj
+	${DARLING_TOP_DIRECTORY}/src/copyfile
+	${DARLING_TOP_DIRECTORY}/src/libutil
+	${DARLING_TOP_DIRECTORY}/src/external/zlib
+	${DARLING_TOP_DIRECTORY}/src/external/bzip2
+	${DARLING_TOP_DIRECTORY}/src/CommonCrypto
+	${DARLING_TOP_DIRECTORY}/src/libremovefile
+	${DARLING_TOP_DIRECTORY}/src/ncurses/include
+)
 
-include(InstallSymlink)
 set(BINARY_PACKAGING_MODE ON)
 
 add_darling_executable(chflags chflags/chflags.c)
@@ -86,4 +95,3 @@ install(FILES shar/shar.sh RENAME shar
 InstallSymlink(chown libexec/darling/bin/chgrp)
 InstallSymlink(rm libexec/darling/bin/unlink)
 InstallSymlink(stat libexec/darling/bin/readlink)
-
