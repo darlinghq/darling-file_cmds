@@ -43,6 +43,7 @@ include_directories(
 	${DARLING_TOP_DIRECTORY}/src/CommonCrypto
 	${DARLING_TOP_DIRECTORY}/src/libremovefile
 	${DARLING_TOP_DIRECTORY}/src/ncurses/include
+	${DARLING_TOP_DIRECTORY}/src/external/liblzma/src/liblzma/api
 )
 
 set(BINARY_PACKAGING_MODE ON)
@@ -56,7 +57,9 @@ add_darling_executable(cp cp/cp.c cp/utils.c)
 add_darling_executable(dd dd/args.c  dd/conv.c  dd/conv_tab.c  dd/dd.c  dd/misc.c  dd/position.c)
 add_darling_executable(df df/df.c df/vfslist.c)
 add_darling_executable(du du/du.c)
-# add_darling_executable(gzip gzip/gzip.c) # TODO: missing liblzma
+add_darling_executable(gzip gzip/gzip.c)
+target_compile_definitions(gzip PRIVATE -DGZIP_APPLE_VERSION="264.30.2")
+target_link_libraries(gzip lzma bz2 z)
 add_darling_executable(install-bin install/xinstall.c)
 set_target_properties(install-bin PROPERTIES OUTPUT_NAME install)
 add_darling_executable(ipcrm ipcrm/ipcrm.c)
@@ -88,10 +91,24 @@ install(FILES compress/zcat.sh RENAME zcat
 	PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
 	                GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 	DESTINATION libexec/darling/bin)
+	install(FILES gzip/zdiff gzip/zmore gzip/znew gzip/zforce gzip/gzexe
+		PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
+		                GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+		DESTINATION libexec/darling/bin)
 install(FILES shar/shar.sh RENAME shar
 	PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
 	                GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 	DESTINATION libexec/darling/bin)
+
+install(TARGETS gzip DESTINATION libexec/darling/usr/bin)
+
 InstallSymlink(chown libexec/darling/bin/chgrp)
 InstallSymlink(rm libexec/darling/bin/unlink)
 InstallSymlink(stat libexec/darling/bin/readlink)
+
+InstallSymlink(gunzip libexec/darling/usr/bin/gzip)
+InstallSymlink(gzcat libexec/darling/usr/bin/gzip)
+InstallSymlink(zcat libexec/darling/usr/bin/gzip)
+InstallSymlink(gunzip libexec/darling/usr/bin/gzip)
+InstallSymlink(zcmp libexec/darling/usr/bin/zdiff)
+InstallSymlink(zless libexec/darling/usr/bin/zmore)
