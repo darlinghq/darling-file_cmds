@@ -6,35 +6,46 @@ if(COMMAND cmake_policy)
 	cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
-include(darling_exe)
-add_definitions(-DTARGET_OS_MAC=1)
-add_definitions(-D__APPLE__ -D__DYNAMIC__)
 # add_definitions(-DSUPPORT_UTMPX)
 
+add_compile_options(
+	-nostdinc
+	-fblocks
+	-fPIC
+	-ggdb
+	-O0
+)
+
 add_definitions(
+	-DTARGET_OS_MAC=1
 	-DCOLORLS=1
+	-D__APPLE__
+	-D__DYNAMIC__
+	-D__DARWIN_UNIX03
+	-U_POSIX_C_SOURCE
 )
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -U_POSIX_C_SOURCE -D__DARWIN_UNIX03 -nostdinc -fblocks -fPIC -ggdb -O0")
 
-include_directories(${DARLING_TOP_DIRECTORY}/src/libc/include/FreeBSD)
-include_directories(${DARLING_TOP_DIRECTORY}/src/libc/include/NetBSD)
-include_directories(${DARLING_TOP_DIRECTORY}/src/libc/gen)
-include_directories(${DARLING_TOP_DIRECTORY}/src/libc/darwin)
-include_directories(${DARLING_TOP_DIRECTORY}/src/libc/stdtime/FreeBSD)
-include_directories(${DARLING_TOP_DIRECTORY}/src/launchd/liblaunch)
-include_directories(${DARLING_TOP_DIRECTORY}/src/external/libdispatch)
-include_directories(${DARLING_TOP_DIRECTORY}/src/libinfo/membership.subproj)
-include_directories(${DARLING_TOP_DIRECTORY}/src/copyfile)
-include_directories(${DARLING_TOP_DIRECTORY}/src/libutil)
-include_directories(${DARLING_TOP_DIRECTORY}/src/external/zlib)
-include_directories(${DARLING_TOP_DIRECTORY}/src/external/bzip2)
-include_directories(${DARLING_TOP_DIRECTORY}/src/CommonCrypto)
-include_directories(${DARLING_TOP_DIRECTORY}/src/libremovefile)
-include_directories(${DARLING_TOP_DIRECTORY}/src/ncurses/include)
-include_directories(${DARLING_TOP_DIRECTORY}/src/external/liblzma/src/liblzma/api/)
+include_directories(
+	${DARLING_TOP_DIRECTORY}/src/libc/include/FreeBSD
+	${DARLING_TOP_DIRECTORY}/src/libc/include/NetBSD
+	${DARLING_TOP_DIRECTORY}/src/libc/gen
+	${DARLING_TOP_DIRECTORY}/src/libc/darwin
+	${DARLING_TOP_DIRECTORY}/src/libc/stdtime/FreeBSD
+	${DARLING_TOP_DIRECTORY}/src/launchd/liblaunch
+	${DARLING_TOP_DIRECTORY}/src/external/libdispatch
+	${DARLING_TOP_DIRECTORY}/src/libinfo/membership.subproj
+	${DARLING_TOP_DIRECTORY}/src/copyfile
+	${DARLING_TOP_DIRECTORY}/src/libutil
+	${DARLING_TOP_DIRECTORY}/src/external/zlib
+	${DARLING_TOP_DIRECTORY}/src/external/bzip2
+	${DARLING_TOP_DIRECTORY}/src/CommonCrypto
+	${DARLING_TOP_DIRECTORY}/src/libremovefile
+	${DARLING_TOP_DIRECTORY}/src/ncurses/include
+	${DARLING_TOP_DIRECTORY}/src/external/liblzma/src/liblzma/api
+)
 
-include(InstallSymlink)
 set(BINARY_PACKAGING_MODE ON)
 
 add_darling_executable(chflags chflags/chflags.c)
@@ -46,9 +57,10 @@ add_darling_executable(cp cp/cp.c cp/utils.c)
 add_darling_executable(dd dd/args.c  dd/conv.c  dd/conv_tab.c  dd/dd.c  dd/misc.c  dd/position.c)
 add_darling_executable(df df/df.c df/vfslist.c)
 add_darling_executable(du du/du.c)
-add_darling_executable(gzip gzip/gzip.c) # TODO: missing liblzma
+
+add_darling_executable(gzip gzip/gzip.c)
 target_link_libraries(gzip lzma z bz2)
-set_target_properties(gzip PROPERTIES COMPILE_FLAGS "-DGZIP_APPLE_VERSION=\\\"242\\\"")
+target_compile_definitions(gzip PRIVATE -DGZIP_APPLE_VERSION="264.30.2")
 InstallSymlink("gzip" "${CMAKE_INSTALL_PREFIX}/libexec/darling/usr/bin/gunzip")
 InstallSymlink("gzip" "${CMAKE_INSTALL_PREFIX}/libexec/darling/usr/bin/gzcat")
 
@@ -86,11 +98,76 @@ install(FILES compress/zcat.sh RENAME zcat
 	PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
 	                GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 	DESTINATION libexec/darling/bin)
+	install(FILES gzip/zdiff gzip/zmore gzip/znew gzip/zforce gzip/gzexe
+		PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
+		                GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+		DESTINATION libexec/darling/bin)
 install(FILES shar/shar.sh RENAME shar
 	PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
 	                GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 	DESTINATION libexec/darling/bin)
+
+install(TARGETS gzip DESTINATION libexec/darling/usr/bin)
+
 InstallSymlink(chown libexec/darling/bin/chgrp)
 InstallSymlink(rm libexec/darling/bin/unlink)
 InstallSymlink(stat libexec/darling/bin/readlink)
 
+InstallSymlink(gzip libexec/darling/usr/bin/gunzip)
+InstallSymlink(gzip libexec/darling/usr/bin/gzcat)
+InstallSymlink(gzip libexec/darling/usr/bin/zcat)
+InstallSymlink(gzip libexec/darling/usr/bin/gunzip)
+InstallSymlink(zdiff libexec/darling/usr/bin/zcmp)
+InstallSymlink(zless libexec/darling/usr/bin/zmore)
+
+# Manpages
+install(FILES
+	mkdir/mkdir.1
+	mv/mv.1
+	dd/dd.1
+	touch/touch.1
+	chmod/chmod.1
+	df/df.1
+	ln/link.1
+	ln/ln.1
+	compress/uncompress.1
+	compress/compress.1
+	gzip/zforce.1
+	gzip/zdiff.1
+	gzip/zmore.1
+	gzip/gzexe.1
+	gzip/znew.1
+	gzip/gzip.1
+	cp/cp.1
+	ls/ls.1
+	rm/unlink.1
+	rm/rm.1
+	stat/stat.1
+	stat/readlink.1
+	chflags/chflags.1
+	chown/chgrp.1
+	rmdir/rmdir.1
+	shar/shar.1
+	pathchk/pathchk.1
+	pax/cpio.1
+	pax/pax.1
+	ipcs/ipcs.1
+	mkfifo/mkfifo.1
+	du/du.1
+	ipcrm/ipcrm.1
+	install/install.1
+	cksum/cksum.1
+	cksum/sum.1
+
+	DESTINATION libexec/darling/usr/share/man1
+)
+
+install(FILES ln/symlink.7 DESTINATION libexec/darling/usr/share/man7)
+
+install(FILES
+	mtree/mtree.8
+	mknod/mknod.8
+	chown/chown.8
+
+	DESTINATION libexec/darling/usr/share/man/man8
+)
