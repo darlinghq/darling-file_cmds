@@ -65,7 +65,7 @@ InstallSymlink("gzip" "${CMAKE_INSTALL_PREFIX}/libexec/darling/usr/bin/gunzip")
 InstallSymlink("gzip" "${CMAKE_INSTALL_PREFIX}/libexec/darling/usr/bin/gzcat")
 
 add_darling_executable(install-bin install/xinstall.c)
-set_target_properties(install-bin PROPERTIES OUTPUT_NAME install)
+#set_target_properties(install-bin PROPERTIES OUTPUT_NAME install)
 add_darling_executable(ipcrm ipcrm/ipcrm.c)
 #add_darling_executable(ipcs ipcs/ipcs.c) # TODO: Doesn't build
 add_darling_executable(ln ln/ln.c)
@@ -91,9 +91,10 @@ install(TARGETS chmod chown cksum cp dd df du
 	ln ls mkdir mknod mv
 	pax rm rmdir stat touch
 	DESTINATION libexec/darling/bin)
-install(TARGETS gzip pathchk compress chflags ipcrm install-bin
+install(TARGETS gzip pathchk compress chflags ipcrm
 	mkfifo
 	DESTINATION libexec/darling/usr/bin)
+install(TARGETS install-bin DESTINATION libexec/darling/usr/bin RENAME install)
 install(FILES compress/zcat.sh RENAME zcat
 	PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
 	                GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
