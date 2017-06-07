@@ -94,7 +94,9 @@ install(TARGETS chmod chown cksum cp dd df du
 install(TARGETS gzip pathchk compress chflags ipcrm
 	mkfifo
 	DESTINATION libexec/darling/usr/bin)
-install(TARGETS install-bin DESTINATION libexec/darling/usr/bin RENAME install)
+
+set_target_properties(install-bin PROPERTIES OUTPUT_NAME "install")
+install(TARGETS install-bin DESTINATION libexec/darling/usr/bin)
 install(FILES compress/zcat.sh RENAME zcat
 	PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
 	                GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
