@@ -89,10 +89,10 @@ target_link_libraries(df util)
 
 install(TARGETS chmod cksum cp dd df du
 	ln ls mkdir mknod mv
-	pax rm rmdir stat touch
+	pax rm rmdir stat
 	DESTINATION libexec/darling/bin)
 install(TARGETS gzip pathchk compress chflags ipcrm
-	mkfifo
+	mkfifo touch
 	DESTINATION libexec/darling/usr/bin)
 
 set_target_properties(install-bin PROPERTIES OUTPUT_NAME "install")
