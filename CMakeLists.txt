@@ -87,7 +87,7 @@ add_darling_executable(touch touch/touch.c)
 
 target_link_libraries(df util)
 
-install(TARGETS chmod chown cksum cp dd df du
+install(TARGETS chmod cksum cp dd df du
 	ln ls mkdir mknod mv
 	pax rm rmdir stat touch
 	DESTINATION libexec/darling/bin)
@@ -112,7 +112,8 @@ install(FILES shar/shar.sh RENAME shar
 
 install(TARGETS gzip DESTINATION libexec/darling/usr/bin)
 
-InstallSymlink(chown libexec/darling/bin/chgrp)
+install(TARGETS chown DESTINATION libexec/darling/usr/sbin)
+InstallSymlink(/usr/sbin/chown libexec/darling/usr/bin/chgrp)
 InstallSymlink(rm libexec/darling/bin/unlink)
 InstallSymlink(stat libexec/darling/bin/readlink)
 
