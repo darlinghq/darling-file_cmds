@@ -163,10 +163,10 @@ install(FILES
 	cksum/cksum.1
 	cksum/sum.1
 
-	DESTINATION libexec/darling/usr/share/man1
+	DESTINATION libexec/darling/usr/share/man/man1
 )
 
-install(FILES ln/symlink.7 DESTINATION libexec/darling/usr/share/man7)
+install(FILES ln/symlink.7 DESTINATION libexec/darling/usr/share/man/man7)
 
 install(FILES
 	mtree/mtree.8
