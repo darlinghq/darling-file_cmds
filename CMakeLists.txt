@@ -9,10 +9,7 @@ endif(COMMAND cmake_policy)
 # add_definitions(-DSUPPORT_UTMPX)
 
 add_definitions(
-	-DTARGET_OS_MAC=1
 	-DCOLORLS=1
-	-D__APPLE__
-	-D__DYNAMIC__
 	-D__DARWIN_UNIX03
 	-U_POSIX_C_SOURCE
 )
