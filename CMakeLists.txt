@@ -18,25 +18,6 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -U_POSIX_C_SOURCE -D__DARWIN_UNIX03 -fblocks
 
 add_definitions(-nostdinc)
 
-include_directories(
-	${DARLING_TOP_DIRECTORY}/src/libc/include/FreeBSD
-	${DARLING_TOP_DIRECTORY}/src/libc/include/NetBSD
-	${DARLING_TOP_DIRECTORY}/src/libc/gen
-	${DARLING_TOP_DIRECTORY}/src/libc/darwin
-	${DARLING_TOP_DIRECTORY}/src/libc/stdtime/FreeBSD
-	${DARLING_TOP_DIRECTORY}/src/launchd/liblaunch
-	${DARLING_TOP_DIRECTORY}/src/external/libdispatch
-	${DARLING_TOP_DIRECTORY}/src/libinfo/membership.subproj
-	${DARLING_TOP_DIRECTORY}/src/copyfile
-	${DARLING_TOP_DIRECTORY}/src/libutil
-	${DARLING_TOP_DIRECTORY}/src/external/zlib
-	${DARLING_TOP_DIRECTORY}/src/external/bzip2
-	${DARLING_TOP_DIRECTORY}/src/CommonCrypto
-	${DARLING_TOP_DIRECTORY}/src/libremovefile
-	${DARLING_TOP_DIRECTORY}/src/ncurses/include
-	${DARLING_TOP_DIRECTORY}/src/external/liblzma/src/liblzma/api
-)
-
 set(BINARY_PACKAGING_MODE ON)
 
 add_darling_executable(chflags chflags/chflags.c)
