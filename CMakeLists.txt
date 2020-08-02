@@ -30,7 +30,7 @@ add_darling_executable(dd dd/args.c  dd/conv.c  dd/conv_tab.c  dd/dd.c  dd/misc.
 add_darling_executable(df df/df.c df/vfslist.c)
 add_darling_executable(du du/du.c)
 
-add_darling_executable(gzip gzip/gzip.c)
+add_darling_executable(gzip gzip/gzip.c gzip/futimens.c)
 target_link_libraries(gzip lzma z bz2)
 target_compile_definitions(gzip PRIVATE -DGZIP_APPLE_VERSION="264.30.2")
 InstallSymlink("gzip" "${CMAKE_INSTALL_PREFIX}/libexec/darling/usr/bin/gunzip")
