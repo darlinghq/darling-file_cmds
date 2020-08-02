@@ -52,6 +52,7 @@ __FBSDID("$FreeBSD: src/bin/cp/utils.c,v 1.46 2005/09/05 04:36:08 csjp Exp $");
 #include <stdlib.h>
 #include <sysexits.h>
 #include <unistd.h>
+#include <locale.h>
 
 #ifdef __APPLE__
 #include <sys/time.h>
@@ -59,6 +60,8 @@ __FBSDID("$FreeBSD: src/bin/cp/utils.c,v 1.46 2005/09/05 04:36:08 csjp Exp $");
 #include <string.h>
 #include <sys/mount.h>
 #include <get_compat.h> 
+#include <sys/attr.h>
+#include <sys/clonefile.h>
 #else 
 #define COMPAT_MODE(a,b) (1)
 #endif /* __APPLE__ */
@@ -77,6 +80,7 @@ copy_file(const FTSENT *entp, int dne)
 	size_t wresid;
 	off_t wtotal;
 	char *bufp;
+	char resp[] = {'\0', '\0'};
 #ifdef VM_AND_BUFFER_CACHE_SYNCHRONIZED
 	char *p;
 #endif
@@ -108,16 +112,33 @@ copy_file(const FTSENT *entp, int dne)
 		} else if (iflag) {
 			(void)fprintf(stderr, "overwrite %s? %s", 
 					to.p_path, YESNO);
+
+			/* Load user specified locale */
+			setlocale(LC_MESSAGES, "");
+
 			checkch = ch = getchar();
 			while (ch != '\n' && ch != EOF)
 				ch = getchar();
-			if (checkch != 'y' && checkch != 'Y') {
+
+			/* only care about the first character */
+			resp[0] = checkch;
+
+			if (rpmatch(resp) != 1) {
 				(void)close(from_fd);
 				(void)fprintf(stderr, "not overwritten\n");
 				return (1);
 			}
 		}
 		
+		if (cflag) {
+			(void)unlink(to.p_path);
+			int error = clonefile(entp->fts_path, to.p_path, 0);
+			if (error)
+				warn("%s: clonefile failed", to.p_path);
+			(void)close(from_fd);
+			return error == 0 ? 0 : 1;
+		}
+
 		if (COMPAT_MODE("bin/cp", "unix2003")) {
 		    /* first try to overwrite existing destination file name */
 		    to_fd = open(to.p_path, O_WRONLY | O_TRUNC, 0);
@@ -140,9 +161,19 @@ copy_file(const FTSENT *entp, int dne)
 			    /* overwrite existing destination file name */
 			    to_fd = open(to.p_path, O_WRONLY | O_TRUNC, 0);
 		}
-	} else
+	} else {
+
+		if (cflag) {
+			int error = clonefile(entp->fts_path, to.p_path, 0);
+			if (error)
+				warn("%s: clonefile failed", to.p_path);
+			(void)close(from_fd);
+			return error == 0 ? 0 : 1;
+		}
+
 		to_fd = open(to.p_path, O_WRONLY | O_TRUNC | O_CREAT,
 		    fs->st_mode & ~(S_ISUID | S_ISGID));
+	}
 
 	if (to_fd == -1) {
 		warn("%s", to.p_path);
@@ -497,13 +528,13 @@ usage(void)
 
 	if (COMPAT_MODE("bin/cp", "unix2003")) {
 	(void)fprintf(stderr, "%s\n%s\n",
-"usage: cp [-R [-H | -L | -P]] [-fi | -n] [-apvX] source_file target_file",
-"       cp [-R [-H | -L | -P]] [-fi | -n] [-apvX] source_file ... "
+"usage: cp [-R [-H | -L | -P]] [-fi | -n] [-apvXc] source_file target_file",
+"       cp [-R [-H | -L | -P]] [-fi | -n] [-apvXc] source_file ... "
 "target_directory");
 	} else {
 	(void)fprintf(stderr, "%s\n%s\n",
-"usage: cp [-R [-H | -L | -P]] [-f | -i | -n] [-apvX] source_file target_file",
-"       cp [-R [-H | -L | -P]] [-f | -i | -n] [-apvX] source_file ... "
+"usage: cp [-R [-H | -L | -P]] [-f | -i | -n] [-apvXc] source_file target_file",
+"       cp [-R [-H | -L | -P]] [-f | -i | -n] [-apvXc] source_file ... "
 "target_directory");
 	}
 	exit(EX_USAGE);
