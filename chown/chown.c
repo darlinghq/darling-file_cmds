@@ -84,6 +84,11 @@ const char *gname;
 int
 main(int argc, char **argv)
 {
+#ifdef DARLING
+	// file ownership is pretty much a no-op under Darling at the moment,
+	// so let's just silently pretend that chown/chgrp always succeeds
+	return 0;
+#else
 	FTS *ftsp;
 	FTSENT *p;
 	int Hflag, Lflag, Pflag, Rflag, fflag, hflag, vflag;
@@ -248,6 +253,7 @@ main(int argc, char **argv)
 	if (errno)
 		err(1, "fts_read");
 	exit(rval);
+#endif
 }
 
 void
