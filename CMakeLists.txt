@@ -85,7 +85,7 @@ install(FILES shar/shar.sh RENAME shar
 install(TARGETS gzip DESTINATION libexec/darling/usr/bin)
 
 install(TARGETS chown DESTINATION libexec/darling/usr/sbin)
-InstallSymlink(/usr/sbin/chown libexec/darling/usr/bin/chgrp)
+InstallSymlink(../sbin/chown libexec/darling/usr/bin/chgrp)
 InstallSymlink(rm libexec/darling/bin/unlink)
 InstallSymlink(stat libexec/darling/bin/readlink)
 
