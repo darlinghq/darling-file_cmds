@@ -161,10 +161,6 @@ int ford[] = {F_PAX, F_TAR, F_OTAR, F_CPIO, F_SCPIO, F_ACPIO, F_OCPIO, -1 };
  */
 int havechd = 0;
 
-#ifdef DARLING
-char* chdname = NULL;
-#endif
-
 /*
  * options()
  *	figure out if we are pax, tar or cpio. Call the appropriate options

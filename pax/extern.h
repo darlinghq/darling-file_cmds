@@ -36,6 +36,9 @@
  *	@(#)extern.h	8.2 (Berkeley) 4/18/94
  */
 
+#ifndef _PAX_EXTERN_H_
+#define _PAX_EXTERN_H_
+
 /*
  * External references from each source file
  */
@@ -200,9 +203,6 @@ int opt_add(const char *);
 int bad_opt(void);
 int pax_format_opt_add(char *);
 int pax_opt(void);
-#ifdef DARLING
-extern
-#endif
 char *chdname;
 
 /*
@@ -343,3 +343,5 @@ void tty_prnt(const char *, ...);
 int tty_read(char *, int);
 void paxwarn(int, const char *, ...);
 void syswarn(int, int, const char *, ...);
+
+#endif /* _PAX_EXTERN_H_ */
