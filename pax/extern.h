@@ -203,6 +203,9 @@ int opt_add(const char *);
 int bad_opt(void);
 int pax_format_opt_add(char *);
 int pax_opt(void);
+#ifdef DARLING
+extern
+#endif
 char *chdname;
 
 /*
