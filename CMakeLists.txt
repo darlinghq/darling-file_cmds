@@ -125,7 +125,7 @@ install(FILES
 	rmdir/rmdir.1
 	shar/shar.1
 	pathchk/pathchk.1
-	pax/cpio.1
+	#pax/cpio.1
 	pax/pax.1
 	ipcs/ipcs.1
 	mkfifo/mkfifo.1
