@@ -253,7 +253,7 @@ main(int argc, char **argv)
 	if (errno)
 		err(1, "fts_read");
 	exit(rval);
-#endif
+#endif // DARLING
 }
 
 void
