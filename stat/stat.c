@@ -179,6 +179,7 @@ __FBSDID("$FreeBSD: src/usr.bin/stat/stat.c,v 1.6 2003/10/06 01:55:17 dougb Exp 
 #define SHOW_filetype	'T'
 #define SHOW_filename	'N'
 #define SHOW_sizerdev	'Z'
+#define SHOW_realpath	'R'
 
 void	usage(const char *);
 void	output(const struct stat *, const char *,
@@ -505,6 +506,7 @@ output(const struct stat *st, const char *file,
 			fmtcase(what, SHOW_filetype);
 			fmtcase(what, SHOW_filename);
 			fmtcase(what, SHOW_sizerdev);
+			fmtcase(what, SHOW_realpath);
 		default:
 			goto badfmt;
 		}
@@ -770,6 +772,20 @@ format1(const struct stat *st,
 		else {
 			linkfail = 1;
 			sdata = "";
+		}
+		formats = FMTF_STRING;
+		if (ofmt == 0)
+			ofmt = FMTF_STRING;
+		break;
+	case SHOW_realpath:
+		small = 0;
+		data = 0;
+		if (realpath(file, path) != NULL) {
+			sdata = path;
+		}
+		else {
+			linkfail = 1;
+			sdata = (char *)file;
 		}
 		formats = FMTF_STRING;
 		if (ofmt == 0)
