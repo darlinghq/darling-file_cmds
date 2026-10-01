@@ -88,6 +88,7 @@ install(TARGETS chown DESTINATION libexec/darling/usr/sbin)
 InstallSymlink(../sbin/chown libexec/darling/usr/bin/chgrp)
 InstallSymlink(rm libexec/darling/bin/unlink)
 InstallSymlink(stat libexec/darling/bin/readlink)
+InstallSymlink(../../bin/stat libexec/darling/usr/bin/stat)
 
 InstallSymlink(gzip libexec/darling/usr/bin/gunzip)
 InstallSymlink(gzip libexec/darling/usr/bin/gzcat)
