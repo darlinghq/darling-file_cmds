@@ -780,12 +780,25 @@ format1(const struct stat *st,
 	case SHOW_realpath:
 		small = 0;
 		data = 0;
+		path[0] = '\0';
 		if (realpath(file, path) != NULL) {
 			sdata = path;
 		}
 		else {
 			linkfail = 1;
-			sdata = (char *)file;
+			/*
+			 * QUIRK: when the path cannot be fully resolved (for
+			 * example a dangling symlink), %R prints the partial
+			 * result that realpath(3) leaves in its buffer (the
+			 * pathname that caused the failure) rather than the
+			 * name as given, and stat still exits with 0.
+			 * Not documented in stat(1). Evidence: black-box
+			 * observation on macOS 27.0.1 (tier 2): a link
+			 * "dang -> missing" in /private/tmp/t prints
+			 * "/private/tmp/t/missing".
+			 * Test: stat_format_realpath (dangling link case).
+			 */
+			sdata = path[0] != '\0' ? path : (char *)file;
 		}
 		formats = FMTF_STRING;
 		if (ofmt == 0)
