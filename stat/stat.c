@@ -179,6 +179,7 @@ __FBSDID("$FreeBSD: src/usr.bin/stat/stat.c,v 1.6 2003/10/06 01:55:17 dougb Exp 
 #define SHOW_filetype	'T'
 #define SHOW_filename	'N'
 #define SHOW_sizerdev	'Z'
+#define SHOW_realpath	'R'
 
 void	usage(const char *);
 void	output(const struct stat *, const char *,
@@ -505,6 +506,7 @@ output(const struct stat *st, const char *file,
 			fmtcase(what, SHOW_filetype);
 			fmtcase(what, SHOW_filename);
 			fmtcase(what, SHOW_sizerdev);
+			fmtcase(what, SHOW_realpath);
 		default:
 			goto badfmt;
 		}
@@ -770,6 +772,33 @@ format1(const struct stat *st,
 		else {
 			linkfail = 1;
 			sdata = "";
+		}
+		formats = FMTF_STRING;
+		if (ofmt == 0)
+			ofmt = FMTF_STRING;
+		break;
+	case SHOW_realpath:
+		small = 0;
+		data = 0;
+		path[0] = '\0';
+		if (realpath(file, path) != NULL) {
+			sdata = path;
+		}
+		else {
+			linkfail = 1;
+			/*
+			 * QUIRK: when the path cannot be fully resolved (for
+			 * example a dangling symlink), %R prints the partial
+			 * result that realpath(3) leaves in its buffer (the
+			 * pathname that caused the failure) rather than the
+			 * name as given, and stat still exits with 0.
+			 * Not documented in stat(1). Evidence: black-box
+			 * observation on macOS 27.0.1 (tier 2): a link
+			 * "dang -> missing" in /private/tmp/t prints
+			 * "/private/tmp/t/missing".
+			 * Test: stat_format_realpath (dangling link case).
+			 */
+			sdata = path[0] != '\0' ? path : (char *)file;
 		}
 		formats = FMTF_STRING;
 		if (ofmt == 0)

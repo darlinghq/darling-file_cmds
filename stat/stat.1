@@ -382,13 +382,15 @@ User defined flags for
 Inode generation number.
 .El
 .Pp
-The following four field specifiers are not drawn directly from the
+The following five field specifiers are not drawn directly from the
 data in
 .Vt "struct stat" ,
 but are:
 .Bl -tag -width indent
 .It Cm N
 The name of the file.
+.It Cm R
+The absolute path of the file, with all symbolic links resolved.
 .It Cm T
 The file type, either as in
 .Nm ls Fl F
